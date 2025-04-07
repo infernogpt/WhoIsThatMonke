@@ -6,9 +6,11 @@ using Utilla;
 
 namespace WhoIsThatMonke
 {
-	// This is your mod's main class.
-	[BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
-	public class Plugin : BaseUnityPlugin
+    [BepInIncompatibility("com.hansolo1000falcon.gorillatag.whatisthefps")]
+    [BepInIncompatibility("com.hansolo1000falcon.gorillatag.whoischeating")]
+    [BepInIncompatibility("com.hansolo1000falcon.gorillatag.whoisspeeding")]
+    [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
+    public class Plugin : BaseUnityPlugin
     {
         void Start()
         {
