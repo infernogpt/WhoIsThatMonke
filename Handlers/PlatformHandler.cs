@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace WhoIsThatMonke.Handlers
     internal class PlatformHandler : MonoBehaviour
     {
         public NameTagHandler nameTagHandler;
-        public Texture2D pcTexture, steamTexture, standaloneTexture, dasMeTexture;
+        public Texture2D pcTexture, steamTexture, standaloneTexture, dasMeTexture, notSureTexture;
         public GameObject fpPlatformIcon, tpPlatformIcon, firstPersonNameTag, thirdPersonNameTag;
         public Renderer fpPlatformRenderer, tpPlatformRenderer, fpTextRenderer;
         public Shader UIShader = Shader.Find("UI/Default");
@@ -25,6 +25,7 @@ namespace WhoIsThatMonke.Handlers
             steamTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.SteamIcon.png");
             standaloneTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.MetaIcon.png");
             dasMeTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.ProfilbildGTAG.png");
+            notSureTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.MetaIconQuestionmark.png");
             CreatePlatformIcons();
         }
 
@@ -106,7 +107,11 @@ namespace WhoIsThatMonke.Handlers
             {
                 return pcTexture;
             }
-            return standaloneTexture;
+            else if (concat.Contains("LMAKT."))
+            {
+                return standaloneTexture;
+            }
+            return notSureTexture;
         }
 
         //this just makes it more readable -Graze
