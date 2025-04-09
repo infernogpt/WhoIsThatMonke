@@ -1,3 +1,5 @@
+using PlayFab.ClientModels;
+using PlayFab;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,11 +15,12 @@ namespace WhoIsThatMonke.Handlers
     internal class PlatformHandler : MonoBehaviour
     {
         public NameTagHandler nameTagHandler;
-        public Texture2D pcTexture, steamTexture, standaloneTexture, dasMeTexture, notSureTexture;
+        public Texture2D pcTexture, steamTexture, standaloneTexture, dasMeTexture, dasGrazeTexture, dasbaggZTexture, dasMonkyTexture, notSureTexture;
         public GameObject fpPlatformIcon, tpPlatformIcon, firstPersonNameTag, thirdPersonNameTag;
         public Renderer fpPlatformRenderer, tpPlatformRenderer, fpTextRenderer;
         public Shader UIShader = Shader.Find("UI/Default");
-        private string myUserID = "A48744B93D9A3596", lastName;
+        public DateTime whenWasGorillaTagPaidOrSmthIDKOculus = new DateTime(2023, 02, 06), createdDate;
+        private string lastName, myUserID = "A48744B93D9A3596", grazeUserID = "42D7D32651E93866", baggZuserID = "9ABD0C174289F58E", monkyUserID = "B1B20DEEEDB71C63";
 
         void Start()
         {
@@ -25,8 +28,22 @@ namespace WhoIsThatMonke.Handlers
             steamTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.SteamIcon.png");
             standaloneTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.MetaIcon.png");
             dasMeTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.ProfilbildGTAG.png");
-            notSureTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.MetaIconQuestionmark.png");
+            dasGrazeTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.GrazeIcon.png");
+            dasbaggZTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.BaggZIcon.png");
+            dasMonkyTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.MonkyIcon.png");
+            notSureTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.Questionmark.png");
             CreatePlatformIcons();
+        }
+
+        private void GetAccountCreationDate(string userID, Action<GetAccountInfoResult> result)
+        {
+            PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest
+            {
+                PlayFabId = userID
+            }, result, error =>
+            {
+                Debug.LogError("Failed to get account info: " + error.ErrorMessage);
+            });
         }
 
         private Texture2D LoadEmbeddedImage(string resourcePath)
@@ -64,6 +81,7 @@ namespace WhoIsThatMonke.Handlers
                 fpPlatformIcon.transform.SetParent(firstPersonNameTag.transform);
                 fpPlatformIcon.transform.localPosition = new Vector3(-3f, 0f, 0f);
                 fpPlatformIcon.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+                fpPlatformIcon.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
                 fpPlatformIcon.layer = firstPersonNameTag.layer;
 
                 Destroy(fpPlatformIcon.GetComponent<Collider>());
@@ -82,6 +100,7 @@ namespace WhoIsThatMonke.Handlers
                 tpPlatformIcon.transform.SetParent(thirdPersonNameTag.transform);
                 tpPlatformIcon.transform.localPosition = new Vector3(-3.25f, 0f, 0f);
                 tpPlatformIcon.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+                tpPlatformIcon.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
                 tpPlatformIcon.layer = thirdPersonNameTag.layer;
 
                 Destroy(tpPlatformIcon.GetComponent<Collider>());
@@ -95,9 +114,25 @@ namespace WhoIsThatMonke.Handlers
         //this just makes it more readable -Graze
         Texture GetPlatformTexture(string concat)
         {
+            GetAccountCreationDate(nameTagHandler.player.UserId, result =>
+            {
+                createdDate = result.AccountInfo.Created;
+            });
             if (nameTagHandler.player.UserId == myUserID)
             {
                 return dasMeTexture;
+            }
+            else if (nameTagHandler.player.UserId == grazeUserID)
+            {
+                return dasGrazeTexture;
+            }
+            else if (nameTagHandler.player.UserId == baggZuserID)
+            {
+                return dasbaggZTexture;
+            }
+            else if (nameTagHandler.player.UserId == monkyUserID)
+            {
+                return dasMonkyTexture;
             }
             else if (concat.Contains("S. FIRST LOGIN"))
             {
@@ -111,7 +146,14 @@ namespace WhoIsThatMonke.Handlers
             {
                 return standaloneTexture;
             }
-            return notSureTexture;
+            else if (createdDate > whenWasGorillaTagPaidOrSmthIDKOculus)
+            {
+                return standaloneTexture;
+            }
+            else
+            {
+                return notSureTexture;
+            }
         }
 
         //this just makes it more readable -Graze
@@ -226,6 +268,7 @@ namespace WhoIsThatMonke.Handlers
                 {
                     tpPlatformRenderer = tpPlatformIcon.GetComponent<Renderer>();
                 }
+
                 if (isPlatformEnabled)
                 {
                     tpPlatformRenderer.forceRenderingOff = false;
