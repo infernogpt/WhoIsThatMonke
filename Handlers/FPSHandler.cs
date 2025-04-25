@@ -6,6 +6,7 @@ using UnityEngine;
 using WhoIsTalking;
 using System.Globalization;
 using static WhoIsThatMonke.PublicVariablesGatherHere;
+using WhoIsThatMonke.Classes;
 
 namespace WhoIsThatMonke.Handlers
 {
@@ -16,6 +17,7 @@ namespace WhoIsThatMonke.Handlers
         public Renderer fpTextRenderer, fpFPSRenderer, tpFPSRenderer;
         public TextMeshPro fpFPSText, tpFPSText;
         public Shader uiShader = Shader.Find("UI/Default");
+        OffsetCalculatorCoolKidzOnly offsetCalculator = new OffsetCalculatorCoolKidzOnly();
 
         void Start()
         {
@@ -23,6 +25,15 @@ namespace WhoIsThatMonke.Handlers
             {
                 CreateVelocityTags(); // cooli cool
             }
+            BoolChangedButOnlyTheGoodOnes += CalculateDaOffset;
+        }
+
+        void CalculateDaOffset()
+        {
+            offsetCalculator.ClearBoolsForDaSools();
+            offsetCalculator.AddBool(isVelocityEnabled);
+            float offset = offsetCalculator.CalculateOffsetCoolKidz();
+            transform.localPosition = new Vector3(0f, offset, 0f);
         }
 
         public void CreateVelocityTags()
@@ -123,19 +134,11 @@ namespace WhoIsThatMonke.Handlers
                     fpFPSRenderer.forceRenderingOff = true;
                     tpFPSRenderer.forceRenderingOff = true;
                 }
-                if (!isVelocityEnabled)
-                {
-                    tpTag.transform.localPosition = new Vector3(0f, 2f, 0f);
-                    fpTag.transform.localPosition = new Vector3(0f, 2f, 0f);
-                }
-                else
-                {
-                    tpTag.transform.localPosition = new Vector3(0f, 3f, 0f);
-                    fpTag.transform.localPosition = new Vector3(0f, 3f, 0f);
-                }
 
-                fpFPSText.color = nameTagHandler.rig.playerColor;
-                tpFPSText.color = nameTagHandler.rig.playerColor;
+                Color daRealColor = fpTextRenderer.material.color;
+
+                fpFPSText.color = daRealColor;
+                tpFPSText.color = daRealColor;
             }
         }
     }

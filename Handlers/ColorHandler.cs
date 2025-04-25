@@ -6,6 +6,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using WhoIsTalking;
+using WhoIsThatMonke.Classes;
 using static WhoIsThatMonke.PublicVariablesGatherHere;
 
 namespace WhoIsThatMonke.Handlers
@@ -17,6 +18,7 @@ namespace WhoIsThatMonke.Handlers
         public Renderer fpTextRenderer, fpColorRenderer, tpColorRenderer;
         public TextMeshPro fpColorText, tpColorText;
         public Shader uiShader = Shader.Find("UI/Default");
+        OffsetCalculatorCoolKidzOnly offsetCalculator = new OffsetCalculatorCoolKidzOnly();
 
         void Start()
         {
@@ -24,6 +26,16 @@ namespace WhoIsThatMonke.Handlers
             {
                 CreateColorTags();
             }
+            BoolChangedButOnlyTheGoodOnes += CalculateDaOffset;
+        }
+
+        void CalculateDaOffset()
+        {
+            offsetCalculator.ClearBoolsForDaSools();
+            offsetCalculator.AddBool(isVelocityEnabled);
+            offsetCalculator.AddBool(isFPSEnabled);
+            float offset = offsetCalculator.CalculateOffsetCoolKidz();
+            transform.localPosition = new Vector3(0f, offset, 0f);
         }
 
         private string GetColorCode(VRRig rig)
@@ -110,14 +122,16 @@ namespace WhoIsThatMonke.Handlers
         {
             if (nameTagHandler != null)
             {
-                if (fpColorText.text != GetColorCode(nameTagHandler.rig))
+                string currentColorCode = GetColorCode(nameTagHandler.rig);
+
+                if (fpColorText.text != currentColorCode)
                 {
-                    fpColorText.text = GetColorCode(nameTagHandler.rig);
+                    fpColorText.text = currentColorCode;
 
                 }
-                if (tpColorText.text != GetColorCode(nameTagHandler.rig))
+                if (tpColorText.text != currentColorCode)
                 {
-                    tpColorText.text = GetColorCode(nameTagHandler.rig);
+                    tpColorText.text = currentColorCode;
                 }
 
                 if (fpTextRenderer == null)
@@ -142,29 +156,11 @@ namespace WhoIsThatMonke.Handlers
                     fpColorRenderer.forceRenderingOff = true;
                     tpColorRenderer.forceRenderingOff = true;
                 }
-                if (!isVelocityEnabled && !isFPSEnabled)
-                {
-                    fpTag.transform.localPosition = new Vector3(0f, 2f, 0f);
-                    tpTag.transform.localPosition = new Vector3(0f, 2f, 0f);
-                }
-                else if (!isFPSEnabled)
-                {
-                    fpTag.transform.localPosition = new Vector3(0f, 3f, 0f);
-                    tpTag.transform.localPosition = new Vector3(0f, 3f, 0f);
-                }
-                else if (!isVelocityEnabled)
-                {
-                    fpTag.transform.localPosition = new Vector3(0f, 3f, 0f);
-                    tpTag.transform.localPosition = new Vector3(0f, 3f, 0f);
-                }
-                else
-                {
-                    fpTag.transform.localPosition = new Vector3(0f, 4f, 0f);
-                    tpTag.transform.localPosition = new Vector3(0f, 4f, 0f);
-                }
 
-                fpColorText.color = nameTagHandler.rig.playerColor;
-                tpColorText.color = nameTagHandler.rig.playerColor;
+                Color daRealColor = fpTextRenderer.material.color;
+
+                fpColorText.color = daRealColor;
+                tpColorText.color = daRealColor;
 
                 if (nameTagHandler.rig.mainSkin.material.color != nameTagHandler.rig.playerColor)
                 {

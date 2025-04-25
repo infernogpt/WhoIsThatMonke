@@ -29,8 +29,8 @@ namespace WhoIsThatMonke
             PhotonNetwork.LocalPlayer.SetCustomProperties(properties);
         }
 
- 	void Awake()
-  	{
+ 	    void Awake()
+  	    {
   	     
             PlatformCheckerEnabled = Config.Bind("Settings", "Platform Checker", true, "Enable or disable the platform checker.");
             VelocityCheckerEnabled = Config.Bind("Settings", "Velocity Checker", true, "Enable or disable the velocity checker.");
@@ -41,6 +41,6 @@ namespace WhoIsThatMonke
             isVelocityEnabled = VelocityCheckerEnabled.Value;
             isFPSEnabled = FPSCheckerEnabled.Value;
             isColorCodeEnabled = ColorCodeSpooferEnabled.Value;
-	}
+        }
     }
 }
