@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\source\\repos\\WhoIsThatMonke\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{81DF12B6-D631-0059-BC4A-F0D7E920C765}|WhoIsThatMonke.csproj|d:\\source\\repos\\whoisthatmonke\\handlers\\fpshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{81DF12B6-D631-0059-BC4A-F0D7E920C765}|WhoIsThatMonke.csproj|solutionrelative:handlers\\fpshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{81DF12B6-D631-0059-BC4A-F0D7E920C765}|WhoIsThatMonke.csproj|d:\\source\\repos\\whoisthatmonke\\plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{81DF12B6-D631-0059-BC4A-F0D7E920C765}|WhoIsThatMonke.csproj|solutionrelative:plugin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -27,6 +31,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "FPSHandler.cs",
+              "DocumentMoniker": "D:\\source\\repos\\WhoIsThatMonke\\Handlers\\FPSHandler.cs",
+              "RelativeDocumentMoniker": "Handlers\\FPSHandler.cs",
+              "ToolTip": "D:\\source\\repos\\WhoIsThatMonke\\Handlers\\FPSHandler.cs",
+              "RelativeToolTip": "Handlers\\FPSHandler.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-25T12:29:11.058Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "Plugin.cs",
               "DocumentMoniker": "D:\\source\\repos\\WhoIsThatMonke\\Plugin.cs",
               "RelativeDocumentMoniker": "Plugin.cs",
