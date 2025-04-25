@@ -21,7 +21,7 @@ namespace WhoIsThatMonke.Handlers
         {
             if (firstPersonNameTag == null || thirdPersonNameTag == null)
             {
-                CreateVelocityTags();
+                CreateVelocityTags(); // cooli cool
             }
         }
 
