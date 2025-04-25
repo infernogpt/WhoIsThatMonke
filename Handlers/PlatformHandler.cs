@@ -9,18 +9,22 @@ using System.Text;
 using UnityEngine;
 using WhoIsTalking;
 using static WhoIsThatMonke.PublicVariablesGatherHere;
+using System.Threading.Tasks;
 
 namespace WhoIsThatMonke.Handlers
 {
     internal class PlatformHandler : MonoBehaviour
     {
         public NameTagHandler nameTagHandler;
-        public Texture2D pcTexture, steamTexture, standaloneTexture, dasMeTexture, dasGrazeTexture, dasbaggZTexture, dasMonkyTexture, notSureTexture;
-        public GameObject fpPlatformIcon, tpPlatformIcon, firstPersonNameTag, thirdPersonNameTag;
-        public Renderer fpPlatformRenderer, tpPlatformRenderer, fpTextRenderer;
-        public Shader UIShader = Shader.Find("UI/Default");
-        public DateTime whenWasGorillaTagPaidOrSmthIDKOculus = new DateTime(2023, 02, 06), createdDate;
-        private string lastName, myUserID = "A48744B93D9A3596", grazeUserID = "42D7D32651E93866", baggZuserID = "9ABD0C174289F58E", monkyUserID = "B1B20DEEEDB71C63";
+        Texture2D pcTexture, steamTexture, standaloneTexture, dasMeTexture, dasGrazeTexture, dasbaggZTexture, dasMonkyTexture, notSureTexture;
+        GameObject fpPlatformIcon, tpPlatformIcon, firstPersonNameTag, thirdPersonNameTag;
+        Renderer fpPlatformRenderer, tpPlatformRenderer, fpTextRenderer;
+        Shader UIShader = Shader.Find("UI/Default");
+        DateTime whenWasGorillaTagPaidOrSmthIDKOculus = new DateTime(2023, 02, 06), createdDate;
+        string lastName;
+        const string myUserID = "A48744B93D9A3596", grazeUserID = "42D7D32651E93866", baggZuserID = "9ABD0C174289F58E", monkyUserID = "B1B20DEEEDB71C63";
+        Dictionary<string, Texture2D> knownUserTextures;
+
 
         void Start()
         {
@@ -32,18 +36,34 @@ namespace WhoIsThatMonke.Handlers
             dasbaggZTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.BaggZIcon.png");
             dasMonkyTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.MonkyIcon.png");
             notSureTexture = LoadEmbeddedImage("WhoIsThatMonke.Assets.Questionmark.png");
+
+            knownUserTextures = new Dictionary<string, Texture2D>()
+            {
+                { myUserID, dasMeTexture },
+                { grazeUserID, dasGrazeTexture },
+                { baggZuserID, dasbaggZTexture },
+                { monkyUserID, dasMonkyTexture },
+            };
+
             CreatePlatformIcons();
         }
 
-        private void GetAccountCreationDate(string userID, Action<GetAccountInfoResult> result)
+        async Task<GetAccountInfoResult> GetAccountCreationDateAsync(string userID)
         {
+            var tcs = new TaskCompletionSource<GetAccountInfoResult>();
+
             PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest
             {
                 PlayFabId = userID
-            }, result, error =>
+            },
+            result => tcs.SetResult(result),
+            error =>
             {
                 Debug.LogError("Failed to get account info: " + error.ErrorMessage);
+                tcs.SetException(new Exception(error.ErrorMessage));
             });
+
+            return await tcs.Task;
         }
 
         private Texture2D LoadEmbeddedImage(string resourcePath)
@@ -111,143 +131,51 @@ namespace WhoIsThatMonke.Handlers
             UpdatePlatformPatchThingy();
         }
 
-        //this just makes it more readable -Graze
-        Texture GetPlatformTexture(string concat)
+        async Task<Texture> GetPlatformTextureAsync(string concat)
         {
-            GetAccountCreationDate(nameTagHandler.player.UserId, result =>
+            string userId = nameTagHandler.player.UserId;
+            var playerRef = nameTagHandler.rig.OwningNetPlayer.GetPlayerRef();
+            int customPropsCount = playerRef.CustomProperties.Count;
+
+            if (knownUserTextures.TryGetValue(userId, out Texture2D knownTexture))
             {
-                createdDate = result.AccountInfo.Created;
-            });
-            if (nameTagHandler.player.UserId == myUserID)
-            {
-                return dasMeTexture;
+                return knownTexture;
             }
-            else if (nameTagHandler.player.UserId == grazeUserID)
-            {
-                return dasGrazeTexture;
-            }
-            else if (nameTagHandler.player.UserId == baggZuserID)
-            {
-                return dasbaggZTexture;
-            }
-            else if (nameTagHandler.player.UserId == monkyUserID)
-            {
-                return dasMonkyTexture;
-            }
-            else if (concat.Contains("S. FIRST LOGIN"))
-            {
-                return steamTexture;
-            }
-            else if (concat.Contains("FIRST LOGIN") || nameTagHandler.rig.OwningNetPlayer.GetPlayerRef().CustomProperties.Count() >= 2)
-            {
-                return pcTexture;
-            }
-            else if (concat.Contains("LMAKT."))
-            {
-                return standaloneTexture;
-            }
-            else if (createdDate > whenWasGorillaTagPaidOrSmthIDKOculus)
-            {
-                return standaloneTexture;
-            }
-            else
-            {
-                return notSureTexture;
-            }
+
+            if (concat.Contains("S. FIRST LOGIN")) return steamTexture;
+            if (concat.Contains("FIRST LOGIN") || customPropsCount >= 2 || customPropsCount < 1) return pcTexture;
+            if (concat.Contains("LMAKT.")) return standaloneTexture;
+
+            var accountInfo = await GetAccountCreationDateAsync(userId);
+            DateTime createdDate = accountInfo.AccountInfo.Created;
+
+            if (createdDate > whenWasGorillaTagPaidOrSmthIDKOculus) return standaloneTexture;
+            return notSureTexture;
         }
 
-        //this just makes it more readable -Graze
-        public void UpdatePlatformPatchThingy()
+        public async void UpdatePlatformPatchThingy()
         {
+            Texture platformTexture = await GetPlatformTextureAsync(nameTagHandler.rig.concatStringOfCosmeticsAllowed);
+
             if (fpPlatformRenderer != null)
             {
-                fpPlatformRenderer.material.mainTexture = GetPlatformTexture(nameTagHandler.rig.concatStringOfCosmeticsAllowed);
+                fpPlatformRenderer.material.mainTexture = platformTexture;
             }
+
             if (tpPlatformRenderer != null)
             {
-                tpPlatformRenderer.material.mainTexture = GetPlatformTexture(nameTagHandler.rig.concatStringOfCosmeticsAllowed);
+                tpPlatformRenderer.material.mainTexture = platformTexture;
             }
         }
 
-        private void ChangePositionOfTheThingy()
+        private float ChangePositionOfTheThingy()
         {
-            switch (nameTagHandler.player.NickName.Length)
+            float offset = nameTagHandler.player.NickName.Length * 0.25f;
+            if (nameTagHandler.player.NickName.Length == 0)
             {
-                case 1:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-0.75f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-0.75f, 0f, 0f);
-                    break;
-
-                case 2:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-1f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-1f, 0f, 0f);
-                    break;
-
-                case 3:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-1.25f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-1.25f, 0f, 0f);
-                    break;
-
-                case 4:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-1.5f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-1.5f, 0f, 0f);
-                    break;
-
-                case 5:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-1.75f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-1.75f, 0f, 0f);
-                    break;
-
-                case 6:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-2f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-2f, 0f, 0f);
-                    break;
-
-                case 7:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-2.25f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-2.25f, 0f, 0f);
-                    break;
-
-                case 8:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-2.5f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-2.5f, 0f, 0f);
-                    break;
-
-                case 9:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-2.75f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-2.75f, 0f, 0f);
-                    break;
-
-                case 10:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-3f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-3f, 0f, 0f);
-                    break;
-
-                case 11:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-3.25f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-3.25f, 0f, 0f);
-                    break;
-
-                case 12:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-3.5f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-3.5f, 0f, 0f);
-                    break;
-
-                case 13:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-3.75f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-3.75f, 0f, 0f);
-                    break;
-
-                case 14:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-4f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-4f, 0f, 0f);
-                    break;
-
-                case 15:
-                    fpPlatformIcon.transform.localPosition = new Vector3(-4.25f, 0f, 0f);
-                    tpPlatformIcon.transform.localPosition = new Vector3(-4.25f, 0f, 0f);
-                    break;
+                return 0f;
             }
+            return -(offset + 0.5f);
         }
 
         //Only the First person One is hidden so i changed this to do that

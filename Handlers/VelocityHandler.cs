@@ -12,13 +12,14 @@ namespace WhoIsThatMonke.Handlers
     internal class VelocityHandler : MonoBehaviour
     {
         public NameTagHandler nameTagHandler;
-        private string velocity;
-        private float lastTime = 0;
-        private float cooldown = 0.5f;
-        public GameObject fpTag, tpTag, firstPersonNameTag, thirdPersonNameTag;
-        public Renderer fpTextRenderer, fpVelocityRenderer, tpVelocityRenderer;
-        public TextMeshPro fpVelocityText, tpVelocityText;
-        public Shader uiShader = Shader.Find("UI/Default");
+        string velocity;
+        float lastTime = 0;
+        float cooldown = 0.5f;
+        GameObject fpTag, tpTag, firstPersonNameTag, thirdPersonNameTag;
+        Renderer fpTextRenderer, fpVelocityRenderer, tpVelocityRenderer;
+        TextMeshPro fpVelocityText, tpVelocityText;
+        Shader uiShader = Shader.Find("UI/Default");
+        Color veloColor;
 
         void Start()
         {
@@ -120,39 +121,21 @@ namespace WhoIsThatMonke.Handlers
                         fpVelocityText.text = velocity;
                     }
 
-                    if (speedMagnitude <= 6.5f)
+                    if (speedMagnitude > 6.5f)
                     {
-                        if (fpVelocityText != null)
-                        {
-                            fpVelocityText.color = Color.green;
-                        }
-                        if (tpVelocityText != null)
-                        {
-                            tpVelocityText.color = Color.green;
-                        }
+                        veloColor = Color.green;
                     }
-                    else if (speedMagnitude > 6.5f && speedMagnitude < 7.0f)
+                    else if (speedMagnitude > 7.5f)
                     {
-                        if (fpVelocityText != null)
-                        {
-                            fpVelocityText.color = Color.yellow;
-                        }
-                        if (tpVelocityText != null)
-                        {
-                            tpVelocityText.color = Color.yellow;
-                        }
+                        veloColor = Color.yellow;
                     }
-                    else if (speedMagnitude >= 7.0f)
+                    else
                     {
-                        if (fpVelocityText != null)
-                        {
-                            fpVelocityText.color = Color.red;
-                        }
-                        if (tpVelocityText != null)
-                        {
-                            tpVelocityText.color = Color.red;
-                        }
+                        veloColor = Color.red;
                     }
+
+                    tpVelocityText.color = veloColor;
+                    fpVelocityText.color = veloColor;
                 }
 
                 if (fpTextRenderer == null)

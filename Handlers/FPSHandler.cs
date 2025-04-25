@@ -13,10 +13,10 @@ namespace WhoIsThatMonke.Handlers
     internal class FPSHandler : MonoBehaviour
     {
         public NameTagHandler nameTagHandler;
-        public GameObject fpTag, tpTag, firstPersonNameTag, thirdPersonNameTag;
-        public Renderer fpTextRenderer, fpFPSRenderer, tpFPSRenderer;
-        public TextMeshPro fpFPSText, tpFPSText;
-        public Shader uiShader = Shader.Find("UI/Default");
+        GameObject fpTag, tpTag, firstPersonNameTag, thirdPersonNameTag;
+        Renderer fpTextRenderer, fpFPSRenderer, tpFPSRenderer;
+        TextMeshPro fpFPSText, tpFPSText;
+        Shader uiShader = Shader.Find("UI/Default");
         OffsetCalculatorCoolKidzOnly offsetCalculator = new OffsetCalculatorCoolKidzOnly();
 
         void Start()

@@ -14,10 +14,10 @@ namespace WhoIsThatMonke.Handlers
     internal class ColorHandler : MonoBehaviour
     {
         public NameTagHandler nameTagHandler;
-        public GameObject fpTag, tpTag, firstPersonNameTag, thirdPersonNameTag;
-        public Renderer fpTextRenderer, fpColorRenderer, tpColorRenderer;
-        public TextMeshPro fpColorText, tpColorText;
-        public Shader uiShader = Shader.Find("UI/Default");
+        GameObject fpTag, tpTag, firstPersonNameTag, thirdPersonNameTag;
+        Renderer fpTextRenderer, fpColorRenderer, tpColorRenderer;
+        TextMeshPro fpColorText, tpColorText;
+        Shader uiShader = Shader.Find("UI/Default");
         OffsetCalculatorCoolKidzOnly offsetCalculator = new OffsetCalculatorCoolKidzOnly();
 
         void Start()
