@@ -41,9 +41,20 @@ namespace WhoIsThatMonke.Handlers
         private string GetColorCode(VRRig rig)
         {
             var color = rig.playerColor;
-            int r = Mathf.RoundToInt(color.r * 9);
-            int g = Mathf.RoundToInt(color.g * 9);
-            int b = Mathf.RoundToInt(color.b * 9);
+            int r, g, b;
+
+            if (twoFiftyFiveColorCodes)
+            {
+                r = Mathf.RoundToInt(color.r * 255);
+                g = Mathf.RoundToInt(color.g * 255);
+                b = Mathf.RoundToInt(color.b * 255);
+            }
+            else
+            {
+                r = Mathf.RoundToInt(color.r * 9);
+                g = Mathf.RoundToInt(color.g * 9);
+                b = Mathf.RoundToInt(color.b * 9);
+            }
             return $"{r}, {g}, {b}";
         }
 
