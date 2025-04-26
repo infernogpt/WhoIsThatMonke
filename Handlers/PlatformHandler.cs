@@ -134,14 +134,9 @@ namespace WhoIsThatMonke.Handlers
         async Task<Texture> GetPlatformTextureAsync(string concat)
         {
             string userId = nameTagHandler.player.UserId;
-            var playerRef = nameTagHandler.rig.OwningNetPlayer.GetPlayerRef();
-            int customPropsCount = playerRef.CustomProperties.Count;
+            int customPropsCount = nameTagHandler.rig.OwningNetPlayer.GetPlayerRef().CustomProperties.Count;
 
-            if (knownUserTextures.TryGetValue(userId, out Texture2D knownTexture))
-            {
-                return knownTexture;
-            }
-
+            if (knownUserTextures.TryGetValue(userId, out Texture2D knownTexture)) return knownTexture;
             if (concat.Contains("S. FIRST LOGIN")) return steamTexture;
             if (concat.Contains("FIRST LOGIN") || customPropsCount >= 2 || customPropsCount < 1) return pcTexture;
             if (concat.Contains("LMAKT.")) return standaloneTexture;
