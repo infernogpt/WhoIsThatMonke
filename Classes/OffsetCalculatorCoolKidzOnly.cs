@@ -21,7 +21,16 @@ namespace WhoIsThatMonke.Classes
 
         public float CalculateOffsetCoolKidz()
         {
-            return 2f + boolsForDaSools.Count(asdf => asdf);
+            int offset = 2;
+            foreach (bool value in boolsForDaSools)
+            {
+                if (value)
+                {
+                    offset++;
+                }
+            }
+
+            return (float)offset;
         }
     }
 }

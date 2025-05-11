@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using WhoIsTalking;
 using WhoIsThatMonke.Classes;
@@ -18,7 +13,7 @@ namespace WhoIsThatMonke.Handlers
         Renderer fpTextRenderer, fpColorRenderer, tpColorRenderer;
         TextMeshPro fpColorText, tpColorText;
         Shader uiShader = Shader.Find("UI/Default");
-        OffsetCalculatorCoolKidzOnly offsetCalculator = new OffsetCalculatorCoolKidzOnly();
+        private OffsetCalculatorCoolKidzOnly offsetCalculator;
 
         void Start()
         {
@@ -26,6 +21,8 @@ namespace WhoIsThatMonke.Handlers
             {
                 CreateColorTags();
             }
+
+            offsetCalculator = new OffsetCalculatorCoolKidzOnly();
             BoolChangedButOnlyTheGoodOnes += CalculateDaOffset;
         }
 
@@ -55,6 +52,7 @@ namespace WhoIsThatMonke.Handlers
                 g = Mathf.RoundToInt(color.g * 9);
                 b = Mathf.RoundToInt(color.b * 9);
             }
+
             return $"{r}, {g}, {b}";
         }
 
@@ -113,6 +111,7 @@ namespace WhoIsThatMonke.Handlers
                 tpColorText.text = GetColorCode(nameTagHandler.rig);
                 tpColorText.color = nameTagHandler.rig.mainSkin.material.color;
             }
+
             UpdateColorPatchThingy();
         }
 
@@ -138,8 +137,8 @@ namespace WhoIsThatMonke.Handlers
                 if (fpColorText.text != currentColorCode)
                 {
                     fpColorText.text = currentColorCode;
-
                 }
+
                 if (tpColorText.text != currentColorCode)
                 {
                     tpColorText.text = currentColorCode;
@@ -149,14 +148,17 @@ namespace WhoIsThatMonke.Handlers
                 {
                     fpTextRenderer = fpTag.transform.parent.GetComponent<Renderer>();
                 }
+
                 if (fpColorRenderer == null)
                 {
                     fpColorRenderer = fpColorText.GetComponent<Renderer>();
                 }
+
                 if (tpColorRenderer == null)
                 {
                     tpColorRenderer = tpColorText.GetComponent<Renderer>();
                 }
+
                 if (isColorCodeEnabled)
                 {
                     tpColorRenderer.forceRenderingOff = false;

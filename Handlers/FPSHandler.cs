@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using WhoIsTalking;
-using System.Globalization;
 using static WhoIsThatMonke.PublicVariablesGatherHere;
 using WhoIsThatMonke.Classes;
 
@@ -17,7 +13,7 @@ namespace WhoIsThatMonke.Handlers
         Renderer fpTextRenderer, fpFPSRenderer, tpFPSRenderer;
         TextMeshPro fpFPSText, tpFPSText;
         Shader uiShader = Shader.Find("UI/Default");
-        OffsetCalculatorCoolKidzOnly offsetCalculator = new OffsetCalculatorCoolKidzOnly();
+        private OffsetCalculatorCoolKidzOnly offsetCalculator;
 
         void Start()
         {
@@ -25,6 +21,7 @@ namespace WhoIsThatMonke.Handlers
             {
                 CreateVelocityTags(); // cooli cool
             }
+            offsetCalculator = new OffsetCalculatorCoolKidzOnly();
             BoolChangedButOnlyTheGoodOnes += CalculateDaOffset;
         }
 

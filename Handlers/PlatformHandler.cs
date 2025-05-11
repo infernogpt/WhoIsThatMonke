@@ -2,10 +2,7 @@ using PlayFab.ClientModels;
 using PlayFab;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 using WhoIsTalking;
 using static WhoIsThatMonke.PublicVariablesGatherHere;
@@ -134,7 +131,7 @@ namespace WhoIsThatMonke.Handlers
         async Task<Texture> GetPlatformTextureAsync(string concat)
         {
             string userId = nameTagHandler.player.UserId;
-            int customPropsCount = nameTagHandler.rig.OwningNetPlayer.GetPlayerRef().CustomProperties.Count;
+            int customPropsCount = nameTagHandler.player.GetPlayerRef().CustomProperties.Count;
 
             if (knownUserTextures.TryGetValue(userId, out Texture2D knownTexture)) return knownTexture;
             if (concat.Contains("S. FIRST LOGIN")) return steamTexture;

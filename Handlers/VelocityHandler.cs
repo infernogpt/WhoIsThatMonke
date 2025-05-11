@@ -13,7 +13,7 @@ namespace WhoIsThatMonke.Handlers
     {
         public NameTagHandler nameTagHandler;
         string velocity;
-        float lastTime = 0;
+        float lastTime = 0f;
         float cooldown = 0.5f;
         GameObject fpTag, tpTag, firstPersonNameTag, thirdPersonNameTag;
         Renderer fpTextRenderer, fpVelocityRenderer, tpVelocityRenderer;
@@ -82,6 +82,7 @@ namespace WhoIsThatMonke.Handlers
                 tpVelocityText.text = "0.0";
                 tpVelocityText.color = Color.green;
             }
+
             UpdateVelocityPatchThingy();
         }
 
@@ -121,11 +122,11 @@ namespace WhoIsThatMonke.Handlers
                         fpVelocityText.text = velocity;
                     }
 
-                    if (speedMagnitude > 6.5f)
+                    if (speedMagnitude < 6.5f)
                     {
                         veloColor = Color.green;
                     }
-                    else if (speedMagnitude > 7.5f)
+                    else if (speedMagnitude < 7.5f)
                     {
                         veloColor = Color.yellow;
                     }
@@ -142,14 +143,17 @@ namespace WhoIsThatMonke.Handlers
                 {
                     fpTextRenderer = fpTag.transform.parent.GetComponent<Renderer>();
                 }
+
                 if (fpVelocityRenderer == null)
                 {
                     fpVelocityRenderer = fpVelocityText.GetComponent<Renderer>();
                 }
+
                 if (tpVelocityRenderer == null)
                 {
                     tpVelocityRenderer = tpVelocityText.GetComponent<Renderer>();
                 }
+
                 if (isVelocityEnabled)
                 {
                     tpVelocityRenderer.forceRenderingOff = false;
