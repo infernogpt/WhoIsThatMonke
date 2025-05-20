@@ -9,7 +9,6 @@ namespace WhoIsThatMonke
     [BepInIncompatibility("com.hansolo1000falcon.gorillatag.whatisthefps")]
     [BepInIncompatibility("com.hansolo1000falcon.gorillatag.whoischeating")]
     [BepInIncompatibility("com.hansolo1000falcon.gorillatag.whoisspeeding")]
-    [BepInIncompatibility("org.iidk.gorillatag.iimenu")]
     [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
     public class Plugin : BaseUnityPlugin
     {
